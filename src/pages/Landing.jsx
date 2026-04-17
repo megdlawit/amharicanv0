@@ -344,7 +344,7 @@ function CurriculumSection() {
   const isEthiopic = azText.includes('ሀ')
 
   return (
-    <section id="curriculum" ref={secRef} style={{ padding:'100px 100px', background:'#fff', borderTop:'1px solid rgba(10,12,20,.08)' }} className="curriculum-section">
+    <section id="curriculum" ref={secRef} style={{ background:'#fff', borderTop:'1px solid rgba(10,12,20,.08)' }} className="curriculum-section">
       <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:80, alignItems:'center' }} className="curriculum-grid">
         <div>
           <SectionEyebrow letter="ሃ">Curriculum</SectionEyebrow>
@@ -468,6 +468,16 @@ export default function Landing() {
         .nav-link-a:hover{color:#0A0C14;background:rgba(10,12,20,.05)}
         .nav-link-a.active{color:#1069DD;background:#e6edff;font-weight:600}
 
+        /* Default (desktop) padding for all major sections */
+        .hero-section{padding-left:100px;padding-right:100px}
+        .how-section{padding:100px 100px}
+        .learners-section{padding:100px 100px}
+        .curriculum-section{padding:100px 100px}
+        .coming-wrap{padding:80px 100px 100px}
+        .coming-section{padding:100px 120px}
+        .feat-header-wrap{padding:80px 100px 56px}
+        .feat-sticky-grid{padding:0 100px}
+        footer.main-footer{padding:0 100px}
         .btn-nav-outline{background:transparent;color:#1069DD;border:1.5px solid #1069DD;border-radius:980px;padding:8px 20px;font:.79rem/1 'DM Sans',sans-serif;font-weight:700;cursor:pointer;transition:background .2s,color .2s;white-space:nowrap;text-decoration:none;display:inline-block}
         .btn-nav-outline:hover{background:#1069DD;color:#fff}
         .btn-nav-solid{background:#1069DD;color:#fff;border:1.5px solid #1069DD;border-radius:980px;padding:8px 20px;font:.79rem/1 'DM Sans',sans-serif;font-weight:700;cursor:pointer;white-space:nowrap;text-decoration:none;display:inline-block;transition:opacity .2s}
@@ -627,7 +637,7 @@ export default function Landing() {
       )}
 
       {/* ══ HERO ══ */}
-      <section id="hero" className="hero-section" style={{ width:'100%', minHeight:'100vh', display:'flex', flexDirection:'row', alignItems:'center', paddingTop:'calc(var(--lnav-h) + 20px)', paddingBottom:40, paddingLeft:100, paddingRight:100, overflow:'hidden', position:'relative', background:'#fff', boxSizing:'border-box' }}>
+      <section id="hero" className="hero-section" style={{ width:'100%', minHeight:'100vh', display:'flex', flexDirection:'row', alignItems:'center', paddingTop:'calc(var(--lnav-h) + 20px)', paddingBottom:40, overflow:'hidden', position:'relative', background:'#fff', boxSizing:'border-box' }}>
         {/* Left */}
         <div className="hero-left-col" style={{ display:'flex', flexDirection:'column', justifyContent:'center', padding:'0 40px 0 0', position:'relative', zIndex:1, flex:'0 0 50%', width:'50%' }}>
           {/* Eyebrow */}
@@ -676,7 +686,7 @@ export default function Landing() {
       </section>
 
       {/* ══ HOW IT WORKS ══ */}
-      <section id="how" className="how-section" style={{ padding:'100px 100px', background:'#fff', borderTop:'1px solid rgba(10,12,20,.08)' }}>
+      <section id="how" className="how-section" style={{ background:'#fff', borderTop:'1px solid rgba(10,12,20,.08)' }}>
         <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', marginBottom:60, gap:40 }}>
           <div style={{ maxWidth:420 }}>
             <SectionEyebrow letter="ሁ">How it works</SectionEyebrow>
@@ -692,7 +702,7 @@ export default function Landing() {
       </section>
 
       {/* ══ LEARNERS ══ */}
-      <section id="learners" className="learners-section" style={{ padding:'100px 100px', background:'#F6F7FB', borderTop:'1px solid rgba(10,12,20,.08)' }}>
+      <section id="learners" className="learners-section" style={{ background:'#F6F7FB', borderTop:'1px solid rgba(10,12,20,.08)' }}>
         <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', gap:60, marginBottom:52 }}>
           <div style={{ maxWidth:420 }}>
             <SectionEyebrow letter="ሂ">Made for you</SectionEyebrow>
@@ -712,8 +722,8 @@ export default function Landing() {
       <Features />
 
       {/* ══ COMING SOON / CTA ══ */}
-      <div ref={comingSoonRef} id="coming-soon-wrap" className="coming-wrap" style={{ padding:'80px 100px 100px', background:'#fff' }}>
-        <section id="coming-soon" className="coming-section" style={{ background:'#062651', borderRadius:100, padding:'100px 120px', display:'flex', alignItems:'center', justifyContent:'space-between', gap:60, position:'relative', overflow:'hidden', textAlign:'left' }}>
+      <div ref={comingSoonRef} id="coming-soon-wrap" className="coming-wrap" style={{ background:'#fff' }}>
+        <section id="coming-soon" className="coming-section" style={{ background:'#062651', borderRadius:100, display:'flex', alignItems:'center', justifyContent:'space-between', gap:60, position:'relative', overflow:'hidden', textAlign:'left' }}>
           {/* Radial glows */}
           <div style={{ position:'absolute', inset:0, pointerEvents:'none', background:'radial-gradient(ellipse 300px 130px at 80% 20%,rgba(255,255,255,.08),transparent 55%),radial-gradient(ellipse 310px 140px at 10% 80%,rgba(255,255,255,.05),transparent 50%)' }} />
           {/* Ethiopic watermark */}
@@ -750,7 +760,7 @@ export default function Landing() {
         </section>
       </div>
       {/* ══ FOOTER ══ */}
-      <footer className="main-footer" style={{ background:'#062651', color:'rgba(255,255,255,.55)', padding:'0 100px' }}>
+      <footer className="main-footer" style={{ background:'#062651', color:'rgba(255,255,255,.55)' }}>
         <div className="footer-inner-row" style={{ display:'flex', alignItems:'center', justifyContent:'space-between', height:108, gap:40 }}>
           <a href="#" style={{ fontFamily:"'DM Sans',sans-serif", fontSize:'1.35rem', color:'#fff', textDecoration:'none', letterSpacing:'-.01em', display:'flex', alignItems:'center', gap:9 }}>
             <div style={{ width:36, height:36, borderRadius:'50%', background:'#1069DD', display:'flex', alignItems:'center', justifyContent:'center', fontFamily:"'Noto Serif Ethiopic',serif", fontSize:'.95rem', color:'#fff', fontWeight:700, flexShrink:0, lineHeight:1 }}>አ</div>

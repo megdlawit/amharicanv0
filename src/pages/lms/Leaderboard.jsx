@@ -52,7 +52,7 @@ export default function Leaderboard() {
         .select('id, name, xp, streak_count, level')
         .order(col, { ascending: false })
         .gt(col, 0)          // only users who have activity
-        .limit(100)
+        .limit(10)
 
       if (err) {
         console.error('Leaderboard fetch error:', err.message)
@@ -83,7 +83,7 @@ export default function Leaderboard() {
           </div>
           <div>
             <h1 className="text-[24px] font-bold text-stone-900 tracking-tight">Leaderboard</h1>
-            <p className="text-stone-400 text-sm">{users.length} learners ranked</p>
+            <p className="text-stone-400 text-sm">Top {users.length} learners</p>
           </div>
         </div>
 
@@ -212,7 +212,7 @@ export default function Leaderboard() {
             {users.length > 0 && (
               <div className="space-y-2">
                 <p className="text-[11px] font-bold text-stone-400 uppercase tracking-widest mb-3">
-                  Full Rankings
+                  Top 10 Rankings
                 </p>
                 {users.map((u, i) => {
                   const rank = i + 1

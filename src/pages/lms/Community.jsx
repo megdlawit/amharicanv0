@@ -234,9 +234,17 @@ function PostCard({ post, onLike, onOpen, isOpen, onReply, replyText, setReplyTe
       <div className="p-5 pb-4">
         <div className="flex items-start gap-3">
           {/* Avatar */}
-          <div className="w-9 h-9 rounded-full bg-stone-100 flex items-center justify-center text-lg shrink-0">
-            {post.avatar}
-          </div>
+          {post.author_profile?.avatar_url || post.avatar_url ? (
+            <img
+              src={post.author_profile?.avatar_url || post.avatar_url}
+              alt={post.author}
+              className="w-9 h-9 rounded-full object-cover shrink-0"
+            />
+          ) : (
+            <div className="w-9 h-9 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center text-sm font-bold shrink-0">
+              {(post.author || '?').charAt(0).toUpperCase()}
+            </div>
+          )}
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap mb-1">
               <span className="text-[13px] font-semibold text-stone-800">{post.author}</span>
@@ -307,9 +315,17 @@ function PostCard({ post, onLike, onOpen, isOpen, onReply, replyText, setReplyTe
           {post.replies?.map((reply, i) => (
             <div key={reply.id} className={clsx('px-5 py-4', i < post.replies.length - 1 && 'border-b border-stone-50')}>
               <div className="flex items-start gap-3">
-                <div className="w-7 h-7 rounded-full bg-stone-100 flex items-center justify-center text-sm shrink-0">
-                  {reply.avatar}
-                </div>
+                {reply.author_profile?.avatar_url || reply.avatar_url ? (
+                  <img
+                    src={reply.author_profile?.avatar_url || reply.avatar_url}
+                    alt={reply.author}
+                    className="w-7 h-7 rounded-full object-cover shrink-0"
+                  />
+                ) : (
+                  <div className="w-7 h-7 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center text-xs font-bold shrink-0">
+                    {(reply.author || '?').charAt(0).toUpperCase()}
+                  </div>
+                )}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
                     <span className="text-[13px] font-semibold text-stone-800">{reply.author}</span>
@@ -445,6 +461,7 @@ export default function Community() {
           return {
             id:         r.id,
             author:     rp?.name || 'Community Member',
+            avatar_url: rp?.avatar_url || null,
             avatar:     rp?.avatar_url || '👤',
             level:      rp?.level || 'A1',
             body:       r.body,
@@ -458,6 +475,7 @@ export default function Community() {
           title:      row.title,
           body:       row.body,
           author:     authorProfile?.name || 'Community Member',
+          avatar_url: authorProfile?.avatar_url || null,
           avatar:     authorProfile?.avatar_url || '👤',
           level:      authorProfile?.level || 'A1',
           likes:      row.likes_count ?? 0,
@@ -608,7 +626,7 @@ export default function Community() {
 
     if (!user || postId.startsWith('seed-')) {
       // Local only
-      const newReply = { id: `reply-${Date.now()}`, author: profile?.name || 'You', avatar: '👤', level: profile?.level || 'A1', body: text, likes: 0, created_at: new Date().toISOString() }
+      const newReply = { id: `reply-${Date.now()}`, author: profile?.name || 'You', avatar_url: profile?.avatar_url || null, avatar: profile?.avatar_url || '👤', level: profile?.level || 'A1', body: text, likes: 0, created_at: new Date().toISOString() }
       setPosts(prev => prev.map(p =>
         p.id === postId ? { ...p, replies: [...(p.replies || []), newReply], comments: (p.comments || 0) + 1 } : p
       ))
@@ -626,7 +644,7 @@ export default function Community() {
     if (insertErr || !inserted) {
       console.error('[Community] Reply insert failed:', insertErr)
       // Show locally
-      const newReply = { id: `reply-${Date.now()}`, author: profile?.name || 'You', avatar: '👤', level: profile?.level || 'A1', body: text, likes: 0, created_at: new Date().toISOString() }
+      const newReply = { id: `reply-${Date.now()}`, author: profile?.name || 'You', avatar_url: profile?.avatar_url || null, avatar: profile?.avatar_url || '👤', level: profile?.level || 'A1', body: text, likes: 0, created_at: new Date().toISOString() }
       setPosts(prev => prev.map(p =>
         p.id === postId ? { ...p, replies: [...(p.replies || []), newReply], comments: (p.comments || 0) + 1 } : p
       ))
@@ -664,16 +682,16 @@ export default function Community() {
 
   return (
     <AppLayout>
-      <div className="max-w-2xl mx-auto px-4 py-7">
+      <div className="max-w-2xl mx-auto px-4 sm:px-6 py-6 sm:py-7">
 
         {/* ── Header ── */}
-        <div className="flex items-start justify-between mb-6">
-          <div>
+        <div className="flex flex-col sm:flex-row sm:items-start gap-3 mb-6">
+          <div className="flex-1">
             <h1 className="text-[24px] font-bold text-stone-900 tracking-tight">Community</h1>
             <p className="text-[13px] text-stone-400 mt-0.5">Ask anything. Help everyone. Learn together.</p>
           </div>
           <button onClick={() => setShowNew(true)}
-            className="btn-primary flex items-center gap-1.5 px-4 py-2.5 text-[13px] shrink-0">
+            className="btn-primary flex items-center gap-1.5 px-4 py-2.5 text-[13px] self-start shrink-0">
             <Plus size={15} /> New Post
           </button>
         </div>

@@ -29,112 +29,81 @@ export default function ListenSelect({ exercise, showRomanization, onAnswer }) {
     setAnswered(true)
   }
 
-  const isCorrect = selected === correct
+  const optClass = opt => {
+    if (!played)   return 'option-btn opacity-40 cursor-not-allowed'
+    if (!answered) return 'option-btn am text-[22px]'
+    if (opt === correct) return 'option-btn option-correct am text-[22px]'
+    if (opt === selected && opt !== correct) return 'option-btn option-wrong am text-[22px]'
+    return 'option-btn option-ghost am text-[22px]'
+  }
 
   return (
     <div className="space-y-5">
       {/* Audio player */}
-      <div className="rounded-3xl px-6 py-8 text-center relative overflow-hidden"
-        style={{ background:'linear-gradient(135deg, #e8f0fe 0%, #dbeafe 100%)', border:'1.5px solid rgba(21,101,232,0.12)' }}>
-        {/* Bg glow */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className="w-32 h-32 rounded-full bg-brand-200/30 blur-3xl" />
-        </div>
-        <div className="relative">
-          {/* Play button */}
-          <button onClick={handlePlay} disabled={playing}
+      <div className="text-center">
+        <div className="inline-flex flex-col items-center gap-3 bg-brand-50 rounded-3xl px-10 py-8">
+          <button
+            onClick={handlePlay}
+            disabled={playing}
             className={clsx(
-              'w-20 h-20 rounded-full flex items-center justify-center mx-auto transition-all duration-200',
+              'w-[72px] h-[72px] rounded-full flex items-center justify-center transition-all duration-200 shadow-lifted',
               playing
-                ? 'cursor-default scale-95'
-                : 'hover:scale-110 active:scale-95'
+                ? 'bg-brand-400 scale-95 cursor-default'
+                : 'bg-brand-500 hover:bg-brand-600 hover:scale-105 active:scale-95'
             )}
-            style={{
-              background: playing
-                ? 'linear-gradient(135deg, #4d90fe, #1565E8)'
-                : 'linear-gradient(135deg, #1565E8, #0f4bc9)',
-              boxShadow: playing
-                ? '0 2px 0 #0a3496, 0 4px 16px rgba(21,101,232,0.4)'
-                : '0 5px 0 #0a3496, 0 8px 24px rgba(21,101,232,0.35)'
-            }}>
-            {playing ? (
-              <div className="flex items-end gap-1 h-7">
-                {[1,2,3,4,5].map(i => (
-                  <div key={i} className="sound-bar w-1.5 rounded-full bg-white"
-                    style={{ height:`${10 + (i%3)*6}px` }} />
-                ))}
-              </div>
-            ) : (
-              <Volume2 size={30} className="text-white ml-1" strokeWidth={2} />
-            )}
+          >
+            <Volume2 size={28} className={clsx('text-white', playing && 'animate-pulse')} strokeWidth={2} />
           </button>
-
-          <p className="text-[13px] font-semibold text-stone-500 mt-3">
-            {!played ? '👆 Tap to hear the word' : playing ? 'Playing…' : '🔄 Tap to replay'}
+          <p className="text-[13px] font-medium text-stone-500">
+            {!played ? 'Tap to hear the word' : playing ? 'Playing…' : 'Tap to replay'}
           </p>
           {played && showRomanization && exercise.romanization && (
-            <p className="text-[12px] text-stone-400 mt-1 bg-white/60 inline-block px-3 py-0.5 rounded-full">
-              {exercise.romanization}
-            </p>
+            <p className="text-[12px] text-stone-400 font-medium">{exercise.romanization}</p>
           )}
         </div>
+        <p className="text-[13px] text-stone-400 font-medium mt-3">
+          {played ? 'Which word did you hear?' : 'Listen first, then choose'}
+        </p>
       </div>
-
-      <p className={clsx('text-center text-[12px] font-bold uppercase tracking-wider transition-colors',
-        played ? 'text-stone-500' : 'text-stone-300')}>
-        {played ? 'Which word did you hear?' : 'Listen first, then choose'}
-      </p>
 
       {/* Options */}
       <div className="grid grid-cols-2 gap-2.5">
-        {options.map(opt => {
-          let cls = 'option-btn'
-          if (!played) cls = 'option-btn opacity-30 cursor-not-allowed'
-          else if (answered) {
-            if (opt === correct)       cls = 'option-btn option-correct'
-            else if (opt === selected) cls = 'option-btn option-wrong animate-shake'
-            else                       cls = 'option-btn option-ghost'
-          }
-          return (
-            <button key={opt} onClick={() => handleSelect(opt)}
-              disabled={!played || answered}
-              className={clsx(cls, 'flex items-center justify-between gap-2 min-h-[60px]')}>
-              <span className="am text-[24px] leading-none">{opt}</span>
-              {answered && opt === correct && (
-                <CheckCircle2 size={17} className="text-emerald-500 shrink-0" strokeWidth={2.5} />
-              )}
-              {answered && opt === selected && opt !== correct && (
-                <XCircle size={17} className="text-red-500 shrink-0" strokeWidth={2.5} />
-              )}
-            </button>
-          )
-        })}
+        {options.map(opt => (
+          <button
+            key={opt}
+            onClick={() => handleSelect(opt)}
+            disabled={!played || answered}
+            className={clsx(optClass(opt), 'flex items-center justify-between gap-2')}
+          >
+            <span className="am text-[22px]">{opt}</span>
+            {answered && opt === correct && <CheckCircle2 size={16} className="text-brand-500 shrink-0" strokeWidth={2.5} />}
+            {answered && opt === selected && opt !== correct && <XCircle size={16} className="text-red-400 shrink-0" strokeWidth={2.5} />}
+          </button>
+        ))}
       </div>
 
-      {/* Feedback */}
       {answered && (
-        <div className={clsx('rounded-2xl p-4 flex items-center justify-between animate-slide-up border-[1.5px]',
-          isCorrect ? 'border-emerald-200' : 'border-red-200')}
-          style={{ background: isCorrect ? 'linear-gradient(135deg,#e8f5ec,#f0faf3)' : 'linear-gradient(135deg,#fde8eb,#fff0f2)' }}>
+        <div className={clsx(
+          'rounded-2xl p-4 flex items-center justify-between animate-slide-up',
+          selected === correct ? 'bg-brand-50 border border-brand-200/50' : 'bg-red-50 border border-red-200/50'
+        )}>
           <div>
-            {isCorrect ? (
-              <div>
-                <p className="font-extrabold text-emerald-700 text-[15px]">✓ Correct!</p>
-                <p className="am text-[14px] text-emerald-600 mt-0.5">{correct}</p>
-              </div>
+            {selected === correct ? (
+              <p className="font-bold text-brand-700 text-[15px]">✓ Correct!</p>
             ) : (
-              <div>
-                <p className="font-extrabold text-red-600 text-[15px]">✗ Not quite</p>
-                <p className="am text-[14px] text-red-500 mt-0.5">{correct}</p>
-              </div>
+              <>
+                <p className="font-bold text-red-600 text-[15px]">✗ Not quite</p>
+                <p className="am text-[13px] text-red-500 mt-0.5">Answer: <strong>{correct}</strong></p>
+              </>
             )}
           </div>
-          <button onClick={() => onAnswer(isCorrect)}
+          <button
+            onClick={() => onAnswer(selected === correct)}
             className={clsx(
-              'flex items-center gap-1.5 px-4 py-2.5 rounded-xl font-bold text-[14px] text-white transition-all active:scale-95',
-              isCorrect ? 'bg-emerald-500 hover:bg-emerald-600' : 'bg-red-500 hover:bg-red-600'
+              'flex items-center gap-1 px-4 py-2.5 rounded-xl font-bold text-[14px] text-white transition-all active:scale-95',
+              selected === correct ? 'bg-brand-500 hover:bg-brand-600' : 'bg-red-500 hover:bg-red-600'
             )}
-            style={{ boxShadow: isCorrect ? '0 3px 0 #166534' : '0 3px 0 #7f1d1d' }}>
+          >
             Next <ChevronRight size={15} />
           </button>
         </div>

@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import { supabase } from '@/lib/supabase'
 import { Link }     from 'react-router-dom'
 import clsx from 'clsx'
+import { useAuthStore } from '@/store/useAuthStore'
 import {
   LayoutDashboard, BookOpen, FileText, BookMarked, Users, Mic,
   Plus, Trash2, Save, Edit2, X, ChevronDown, ChevronRight,
@@ -29,6 +30,17 @@ const TABS = [
   { id: 'users',     label: 'Users',      icon: Users           },
   { id: 'settings',  label: 'Settings',   icon: FileText        },
 ]
+
+// Maps each tab to the permission key required to see it (null = always visible)
+const TAB_PERMISSION_MAP = {
+  dashboard: null,
+  content:   'manage_content',
+  videos:    'manage_videos',
+  vocab:     'manage_vocab',
+  audio:     'manage_audio',
+  users:     'manage_users',
+  settings:  'manage_settings',
+}
 
 // Granular admin permission keys → labels
 const ALL_PERMISSIONS = {
@@ -597,6 +609,14 @@ function AudioUploadModal({ item, saving, onSave, onRemove, onClose }) {
 // MAIN ADMIN COMPONENT
 // ─────────────────────────────────────────────────────────────
 export default function Admin() {
+  const { profile: authProfile } = useAuthStore()
+
+  // Only show tabs the current admin has permission for
+  const visibleTabs = TABS.filter(t => {
+    const perm = TAB_PERMISSION_MAP[t.id]
+    return !perm || hasPermission(authProfile, perm)
+  })
+
   const [tab,      setTab]      = useState('dashboard')
   const [loading,  setLoading]  = useState(true)
   const [saving,   setSaving]   = useState(false)
@@ -940,7 +960,7 @@ export default function Admin() {
     // Use rpc to bypass RLS recursion — the SQL function runs as DB owner
     const { data, error } = await supabase.rpc('admin_update_user_role', {
       target_user_id:    userId,
-      new_role:          isPendingPromotion ? 'admin' : undefined,
+      new_role:          isPendingPromotion ? 'admin' : null,
       new_permissions:   permObj,
     })
 
@@ -1073,7 +1093,7 @@ export default function Admin() {
         </Link>
 
         <nav className="flex-1 space-y-0.5">
-          {TABS.map(({ id, label, icon: Icon }) => (
+          {visibleTabs.map(({ id, label, icon: Icon }) => (
             <button key={id} onClick={() => setTab(id)}
               className={clsx(
                 'w-full flex items-center gap-2.5 px-3 py-2.5 rounded-2xl text-[13px] font-medium transition-all',
@@ -1095,7 +1115,7 @@ export default function Admin() {
 
       {/* ── Mobile top bar ── */}
       <div className="md:hidden fixed top-0 left-0 right-0 z-30 bg-white border-b border-stone-100 px-4 py-3 flex gap-2 overflow-x-auto">
-        {TABS.map(({ id, label, icon: Icon }) => (
+        {visibleTabs.map(({ id, label, icon: Icon }) => (
           <button key={id} onClick={() => setTab(id)}
             className={clsx('flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[12px] font-semibold shrink-0',
               tab === id ? 'bg-brand-500 text-white' : 'bg-stone-100 text-stone-500')}>

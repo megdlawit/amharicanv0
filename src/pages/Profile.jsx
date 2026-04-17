@@ -1,11 +1,12 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Link }         from 'react-router-dom'
 import { supabase }     from '@/lib/supabase'
 import { useAuthStore } from '@/store/useAuthStore'
 import AppLayout        from '@/components/layout/AppLayout'
 import { ProgressBar }  from '@/components/ui/ProgressBar'
-import { Zap, Flame, BookOpen, Award, Save, ChevronRight, Settings } from 'lucide-react'
+import { Zap, Flame, BookOpen, Award, Save, ChevronRight, Settings, Pencil } from 'lucide-react'
 import clsx from 'clsx'
+import AvatarEditor, { AvatarDisplay } from '@/components/AvatarEditor'
 
 const LEVEL_PCT = { A1: 15, 'A1+': 35, A2: 55, B1: 75, B2: 95 }
 const GOAL_OPTIONS = [5, 10, 15, 20, 30]
@@ -20,11 +21,14 @@ export default function Profile() {
   const [streakDays,  setStreakDays]  = useState([])
   const [lessonCount, setLessonCount] = useState(0)
   const [showSettings,setShowSettings]= useState(false)
+  const [avatarUrl,   setAvatarUrl]   = useState(null)
+  const [showAvatarEditor, setShowAvatarEditor] = useState(false)
 
   useEffect(() => {
     if (profile) {
       setName(profile.name || '')
       setGoalMinutes(profile.goal_minutes || 10)
+      setAvatarUrl(profile.avatar_url || null)
     }
   }, [profile])
 
@@ -81,8 +85,12 @@ export default function Profile() {
 
         {/* Avatar + name */}
         <div className="card p-5 mb-4 flex items-center gap-4">
-          <div className="w-14 h-14 rounded-full bg-brand-100 flex items-center justify-center text-brand-600 font-bold text-[20px] shrink-0">
-            {initials}
+          {/* Clickable avatar — opens avatar editor */}
+          <div className="relative shrink-0 group cursor-pointer" onClick={() => setShowAvatarEditor(true)}>
+            <AvatarDisplay avatarUrl={avatarUrl} initials={initials} size={56} />
+            <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center shadow-sm border-2 border-white group-hover:bg-green-600 transition-colors">
+              <Pencil size={11} className="text-white" strokeWidth={2.5} />
+            </div>
           </div>
           <div className="flex-1 min-w-0">
             <input
@@ -217,6 +225,16 @@ export default function Profile() {
 
         <div className="h-6" />
       </div>
+
+      {showAvatarEditor && (
+        <AvatarEditor
+          onClose={() => setShowAvatarEditor(false)}
+          onSave={(cfg) => {
+            setAvatarUrl(JSON.stringify({ type: 'avatarConfig', config: cfg }))
+            setShowAvatarEditor(false)
+          }}
+        />
+      )}
     </AppLayout>
   )
 }
