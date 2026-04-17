@@ -11,7 +11,7 @@ import LessonPage   from '@/pages/LessonPage'
 import Profile      from '@/pages/Profile'
 import Admin        from '@/pages/Admin'
 import NotFound     from '@/pages/NotFound'
-import Feature         from '@/pages/feature'
+import Feature         from '@/pages/Feature'
 
 import CourseCatalog from '@/pages/lms/CourseCatalog'
 import CourseDetail  from '@/pages/lms/CourseDetail'
