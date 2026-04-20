@@ -6,7 +6,7 @@ import AppLayout        from '@/components/layout/AppLayout'
 import { ProgressBar }  from '@/components/ui/ProgressBar'
 import { Zap, Flame, BookOpen, Award, Save, ChevronRight, Settings, Pencil } from 'lucide-react'
 import clsx from 'clsx'
-import AvatarEditor, { AvatarDisplay } from '@/components/AvatarEditor'
+import AvatarEditor, { AvatarDisplay } from '@/components/Avatareditor'
 
 const LEVEL_PCT = { A1: 15, 'A1+': 35, A2: 55, B1: 75, B2: 95 }
 const GOAL_OPTIONS = [5, 10, 15, 20, 30]
